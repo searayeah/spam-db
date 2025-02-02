@@ -11,12 +11,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Install uv
         uses: astral-sh/setup-uv@v5
+
       - name: "Set up Python"
         uses: actions/setup-python@v5
         with:
           python-version-file: ".python-version"
+
       - name: Install the project
         run: uv sync --all-extras --dev
 
@@ -26,10 +29,19 @@ jobs:
       - name: Get fork db
         run: uv run python spam_db/create_database.py https://yacb.lom.name/srvapp/get-database/sia.zip sia fork.csv
 
-      # Create a GitHub release
+      - name: Set tag and release name
+        id: date
+        run: |
+          current_date=$(date +'%Y-%m-%d')
+          echo "Current Date: $current_date"
+          echo "RELEASE_TAG=$current_date" >> "$GITHUB_ENV"
+          echo "RELEASE_NAME=$current_date" >> "$GITHUB_ENV"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_NAME }}
           files: |
             original.csv
             fork.csv
