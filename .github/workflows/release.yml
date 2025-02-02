@@ -44,5 +44,7 @@ jobs:
           files: |
             filtered_original.csv
             filtered_fork.csv
+            example_original.csv
+            example_fork.csv
             original.csv
             fork.csv
