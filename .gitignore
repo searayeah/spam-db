@@ -269,3 +269,4 @@ lightning_logs/
 
 # spam-db
 sia/
+*.csv
