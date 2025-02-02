@@ -2,7 +2,7 @@ name: Release databases
 
 on:
   schedule:
-    - cron: "0 5 * * *"
+    - cron: "0 13 * * 1" # "At 13:00 on Monday."
   workflow_dispatch:
 
 jobs:
@@ -24,10 +24,10 @@ jobs:
         run: uv sync --all-extras --dev
 
       - name: Get original db
-        run: uv run python spam_db/create_database.py https://gitlab.com/xynngh/YetAnotherCallBlocker_data/raw/zip_v1/archives/sia.zip sia original.csv
+        run: uv run python spam_db/create_database.py ${{ secrets.ORIGINAL_SOURCE }} sia_orig original.csv
 
       - name: Get fork db
-        run: uv run python spam_db/create_database.py https://yacb.lom.name/srvapp/get-database/sia.zip sia fork.csv
+        run: uv run python spam_db/create_database.py ${{ secrets.FORK_SOURCE }} sia_fork fork.csv
 
       - name: Set tag and release name
         id: date

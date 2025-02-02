@@ -28,7 +28,7 @@ def create_database(folder_path, output_csv):
                         neu_counts[i],
                         unknowns[i],
                         categories[i],
-                    ]
+                    ],
                 )
 
     df = pd.DataFrame(

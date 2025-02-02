@@ -1,5 +1,5 @@
 class DatabaseDataSliceNode:
-    def __init__(self):
+    def __init__(self) -> None:
         self.slice_tree = [None] * 10
 
     def init(self, data: str, offset: int) -> int:
@@ -31,7 +31,7 @@ class DatabaseDataSliceNode:
             else 0
         )
 
-    def get_all_keys(self, prefix="") -> list:
+    def get_all_keys(self, prefix: str = "") -> list:
         keys = []
 
         for digit in range(10):

@@ -1,7 +1,11 @@
 import struct
+from io import BufferedReader
+from time import time
 
 
-def load_from_file(file_path):
+def load_from_file(
+    file_path: str,
+) -> tuple[list[int], list[int], list[int], list[int], list[int], list[int]]:
     print(f"load_from_file() started {file_path}")
 
     current_time_millis = current_millis()
@@ -26,14 +30,6 @@ def load_from_file(file_path):
         print("load_from_file() reading number of items")
         number_of_items = read_int(f)
         print(f"load_from_file() number of items is {number_of_items}")
-
-        # global numbers
-        # global positive_ratings_counts, negative_ratings_counts, neutral_ratings_counts, unknown_data, categories
-        # positive_ratings_counts = bytearray(number_of_items)
-        # negative_ratings_counts = bytearray(number_of_items)
-        # neutral_ratings_counts = bytearray(number_of_items)
-        # unknown_data = bytearray(number_of_items)
-        # categories = bytearray(number_of_items)
 
         positive_ratings_counts = [0] * number_of_items
         negative_ratings_counts = [0] * number_of_items
@@ -69,7 +65,8 @@ def load_from_file(file_path):
             raise OSError(f"Endmark not found. Found instead: {endmark_string}")
 
     print(
-        f"load_from_file() loaded slice with {number_of_items} items in {current_millis() - current_time_millis} ms"
+        f"load_from_file() loaded slice with {number_of_items} "
+        f"items in {current_millis() - current_time_millis} ms",
     )
 
     return (
@@ -82,76 +79,73 @@ def load_from_file(file_path):
     )
 
 
-def current_millis():
-    from time import time
-
+def current_millis() -> int:
     return int(time() * 1000)
 
 
-def read_byte(f):
+def read_byte(f: BufferedReader) -> int:
     byte = f.read(1)
     if len(byte) < 1:
         raise EOFError
     return byte[0]
 
 
-def read_int(f):
+def read_int(f: BufferedReader) -> int:
     buffer = f.read(4)
     if len(buffer) < 4:
         raise EOFError
     return struct.unpack("<i", buffer)[0]
 
 
-def read_long(f):
+def read_long(f: BufferedReader) -> int:
     buffer = f.read(8)
     if len(buffer) == 8:
-        # '<q' for little-endian long long (8 bytes)
         return struct.unpack("<q", buffer)[0]
     raise EOFError("Unexpected end of file")
 
 
-def read_utf8_string_chars(f, length):
+def read_utf8_string_chars(f: BufferedReader, length: int) -> str:
     data = f.read(length)
     if len(data) < length:
         raise EOFError
     return data.decode("utf-8")
 
 
-def load_from_stream_check_header(header):
+def load_from_stream_check_header(header: str) -> None:
     if header.upper() not in ["YABF", "MTZF", "MTZD"]:
         raise OSError(f"Invalid header. Actual value: {header}")
 
 
-def load_from_stream_read_post_header_data(f):
+def load_from_stream_read_post_header_data(f: BufferedReader) -> None:
     b = read_byte(f)  # ignored
     print(f"load_from_stream_read_post_header_data() b={b}")
 
 
-def load_from_stream_read_post_version_data(f):
+def load_from_stream_read_post_version_data(f: BufferedReader) -> None:
     s = read_utf8_string_chars(f, 2)  # ignored
     i = read_int(f)  # ignored
     print(f"load_from_stream_read_post_version_data() s={s}, i={i}")
 
 
-def load_from_stream_init_fields():
+def load_from_stream_init_fields() -> None:
     pass  # Fields are initialized globally
 
 
-def load_from_stream_load_fields(f):
+def load_from_stream_load_fields(f: BufferedReader) -> tuple[int, int, int, int, int]:
     return (read_byte(f) for _ in range(5))
 
 
-def load_from_stream_load_extras(f):
+def load_from_stream_load_extras(f: BufferedReader) -> None:
     number_of_items_to_delete = read_int(f)
     print(
-        f"load_from_stream_load_extras() number_of_items_to_delete={number_of_items_to_delete}"
+        f"load_from_stream_load_extras() number_of_items_to_delete={number_of_items_to_delete}",
     )
 
     global numbers_to_delete
     numbers_to_delete = [read_long(f) for _ in range(number_of_items_to_delete)]
 
 
-def get_database_size(data_slice_info_file):
+def get_database_size(data_slice_info_file: str) -> int:
     with open(data_slice_info_file) as file:
         lines = file.readlines()
         return int(lines[2].strip())
