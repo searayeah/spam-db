@@ -110,19 +110,6 @@ def read_long(f):
     raise EOFError("Unexpected end of file")
 
 
-# def read_int(f):
-#     data = f.read(4)
-#     if len(data) < 4:
-#         raise EOFError()
-# return (data[0] & 0xff) | ((data[1] & 0xff) << 8) | ((data[2] & 0xff) << 16) | ((data[3] & 0xff) << 24)
-
-# def read_long(f):
-#     data = f.read(8)
-#     if len(data) < 8:
-#         raise EOFError()
-#     return sum((data[i] & 0xff) << (8 * i) for i in range(8))
-
-
 def read_utf8_string_chars(f, length):
     data = f.read(length)
     if len(data) < length:
