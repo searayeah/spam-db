@@ -13,8 +13,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Install uv
         uses: astral-sh/setup-uv@v5
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
       - name: Install the project
-        run: uv sync
+        run: uv sync --all-extras --dev
 
       - name: Get original db
         run: python spam_db/create_database.py https://gitlab.com/xynngh/YetAnotherCallBlocker_data/raw/zip_v1/archives/sia.zip sia original.csv
