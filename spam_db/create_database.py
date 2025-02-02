@@ -50,7 +50,7 @@ def create_database(folder_path, output_csv):
     df[
         df["Number"].astype(str).str.startswith(("7", "8"))
         & (df["Number"].astype(str).str.len() == 11)
-    ].to_csv(f"filtered_{output_csv}", index=False)
+    ][["Number"]].to_csv(f"filtered_{output_csv}", index=False)
     df.sample(20).to_csv(f"example_{output_csv}", index=False)
     print(f"Data saved to {output_csv} and filtered_{output_csv}")
 
