@@ -29,6 +29,19 @@ jobs:
       - name: Get fork db
         run: uv run python spam_db/create_database.py ${{ secrets.FORK_SOURCE }} sia_fork fork.csv
 
+      - uses: sgpublic/delete-release-action@v1.2
+        with:
+          release-drop: true
+          release-keep-count: 0
+          release-drop-tag: true
+          pre-release-drop: true
+          pre-release-keep-count: -1
+          pre-release-drop-tag: true
+          draft-drop: true
+          draft-drop-count: -1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
       - name: Set tag and release name
         run: |
           current_date=$(date +'%Y-%m-%d')
