@@ -1,0 +1,31 @@
+name: Release databases
+
+on:
+  schedule:
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Install the project
+        run: uv sync
+
+      - name: Get original db
+        run: python spam_db/create_database.py https://gitlab.com/xynngh/YetAnotherCallBlocker_data/raw/zip_v1/archives/sia.zip sia original.csv
+
+      - name: Get fork db
+        run: uv run python spam_db/create_database.py https://yacb.lom.name/srvapp/get-database/sia.zip sia fork.csv
+
+      # Create a GitHub release
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            original.csv
+            fork.csv
