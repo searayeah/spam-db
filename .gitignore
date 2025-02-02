@@ -270,3 +270,5 @@ lightning_logs/
 # spam-db
 sia/
 result.csv
+original.csv
+fork.csv

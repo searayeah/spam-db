@@ -21,7 +21,7 @@ jobs:
           python-version-file: ".python-version"
 
       - name: Install the project
-        run: uv sync --all-extras --dev
+        run: uv sync
 
       - name: Get original db
         run: uv run python spam_db/create_database.py ${{ secrets.ORIGINAL_SOURCE }} sia_orig original.csv
@@ -30,7 +30,6 @@ jobs:
         run: uv run python spam_db/create_database.py ${{ secrets.FORK_SOURCE }} sia_fork fork.csv
 
       - name: Set tag and release name
-        id: date
         run: |
           current_date=$(date +'%Y-%m-%d')
           echo "Current Date: $current_date"
